@@ -1,0 +1,4 @@
+lsel
+*.o
+*.tar.gz
+config.h

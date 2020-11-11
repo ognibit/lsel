@@ -1,0 +1,66 @@
+.Dd 2020-11-03
+.Dt LSEL 1
+.Sh NAME
+.Nm lsel
+.Nd line selector
+.Sh SYNOPSIS
+.Nm
+.Op Fl a
+.Op Fl i
+.Op Fl m
+.Op Fl n
+.Op Fl p
+.Op Fl h
+.Sh DESCRIPTION
+.Nm
+is a text manipulation tool. It takes the lines (terminated with endline char)
+from stdin, put on stderr and give a terminal based menu for selecting
+which one will go to the stdout.
+
+The lines are truncated if too long.
+
+It can be used to build a custom terminal menu for choose an options or to
+cherry-picking lines from a file without copy and edit the file with text
+editor.
+
+To select one or more items press TAB.
+
+To move up and down use the arrows or the page up/down.
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl h
+print the help message.
+.It Fl a
+--autoselect         the line with cursor is also selected (no effect with -m)
+.It Fl i
+--insensitive        enable case insensitive matching 
+.It Fl m
+--multiselect        select and output more than one line 
+.It Fl n
+--numbers            display line numbers 
+.It Fl p
+--prompt             the prompt displayed to the search bar
+.El
+.Sh EXAMPLES
+Build a simple menu, to print out one of your favourite file:
+
+$ cat favourite |
+.Nm
+-i -a
+| xargs -r cat 
+
+Extract lines from log file, choosing them one by one:
+
+$ cat /var/log/syslog |
+.Nm
+-m -i -n > custom_log_selection.log
+
+Remove the selected files:
+
+find . -type f | sort |
+.Nm
+-m | xargs -r -o rm -i
+.Sh CUSTOMIZATION
+.Nm
+can be customized by creating a custom config.h from config.def.h and
+(re)compiling the source code. This keeps it fast, secure and simple.
