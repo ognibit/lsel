@@ -361,7 +361,6 @@ void menuline_print(MenuLine *ml[], size_t n, size_t cur, char *fmt)
     size_t cpage;
     char c, s;
     int i;
-    char buf[width];
 
     cpage = cur / height;
 
@@ -369,14 +368,12 @@ void menuline_print(MenuLine *ml[], size_t n, size_t cur, char *fmt)
         c = (i == cur)?'>':' ';
         if (i < n){
             s = (ml[i]->selected)?'*':' ';
-            /* keep space for the 2 initial char, \0 and linenum */
-            strncpy(buf, ml[i]->line, width-1);
-            buf[width-2-print_offset] = '\0';
+            /* keep space for the 2 initial char, \n and linenum */
             if (config.numbers){
                 /* line num start from 1 */
-                fprintf(stderr, fmt, i+1, s, c, buf);
+                fprintf(stderr, fmt, i+1, s, c, width-3-print_offset, ml[i]->line);
             } else {
-                fprintf(stderr, "%c%c%s\n", s, c, buf);
+                fprintf(stderr, "%c%c%.*s\n", s, c, width-3, ml[i]->line);
             }
         } else {
             fprintf(stderr, "\n");
@@ -405,10 +402,10 @@ void prompt(MenuLine lines[], size_t nlines, size_t height)
     print_offset = 0;
     if (config.numbers){
         print_offset = numdigits(nlines);
-        /* build the expression '%Xld%c%c%s\n' where X is the number of digits
+        /* build the expression '%Xld%c%c%.*s\n' where X is the number of digits
         * to have the column of line number larger enough to contains nlines
         */
-        sprintf(fmt, "%%%dld%%c%%c%%s\n", print_offset);
+        sprintf(fmt, "%%%dld%%c%%c%%.*s\n", print_offset);
     }
 
     cursor = 0;
